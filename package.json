@@ -1,5 +1,5 @@
 {
-  "name": "MyApp",
+  "name": "PeakTask",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,15 +10,19 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^8.3.0",
+    "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.14",
     "react": "18.3.1",
     "react-native": "0.77.0",
+    "react-native-bootsplash": "^6.3.3",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "^2.22.1",
     "react-native-reanimated": "^3.16.7",
     "react-native-safe-area-context": "^5.1.0",
     "react-native-screens": "^4.6.0",
+    "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {

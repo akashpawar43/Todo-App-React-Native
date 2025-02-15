@@ -13,6 +13,10 @@ type ListProps = {
     title: string,
     description: string,
     complete: false,
+    dueDate: string;
+    priority: string;
+    status: string;
+    category: string;
     __v: number
 }
 

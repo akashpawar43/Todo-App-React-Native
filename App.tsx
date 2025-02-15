@@ -10,10 +10,16 @@ import { enableScreens } from 'react-native-screens';
 import { Icon, Image } from 'react-native-elements';
 import EditTodoScreen from './src/screens/EditTodoScreen';
 enableScreens();
+import RNBootSplash from "react-native-bootsplash";
+import AddTodoScreenNew from './src/screens/AddTodoScreenNew';
+import ViewTodoScreen from './src/screens/ViewTodoScreen';
+import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
 
 export type RootDrawerParams = {
   Home: undefined,
   'Add Todo': undefined,
+  'Add Todo new': undefined,
+  'View Todo': { id: string },
   'Edit Todo': { id: string },
 }
 
@@ -33,7 +39,42 @@ const CustomDrawerContent = (props: any) => {
 };
 
 const App = () => {
-  const theme = useColorScheme(); return (
+  const theme = useColorScheme();
+  useEffect(() => {
+    const init = async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate loading
+      RNBootSplash.hide({ fade: true });
+    };
+
+    init();
+  }, []);
+
+  const toastConfig = {
+    // success: (props) => (
+    //   <BaseToast
+    //     {...props}
+    //   />
+    // ),
+    error: (props: BaseToastProps) => (
+      <ErrorToast
+        {...props}
+        style={{
+          minHeight: 80,
+          paddingVertical: 20,
+          marginTop: 10,
+          borderLeftColor: '#FE6301',
+        }}
+        text1Style={{
+          fontSize: 13
+        }}
+        text2Style={{
+          fontSize: 13
+        }}
+        text2NumberOfLines={5}
+      />
+    ),
+  };
+  return (
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <NavigationContainer>
         <Drawer.Navigator screenOptions={{ headerShown: false, drawerStyle: { padding: 0 } }} drawerContent={(props) => <CustomDrawerContent {...props} />} initialRouteName="Home">
@@ -55,9 +96,20 @@ const App = () => {
               color: '#5670cd',
             },
           }} component={AddTodoScreen} />
+          <Drawer.Screen name='View Todo' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreen} />
           <Drawer.Screen name='Edit Todo' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreen} />
+          <Drawer.Screen name='Add Todo new' options={{
+            drawerIcon: ({ color, size }) => (
+              <Icon name='add' size={33} color='#5670cd' />
+            ),
+            drawerActiveTintColor: '#5670cd',
+            drawerLabelStyle: {
+              color: '#5670cd',
+            },
+          }} component={AddTodoScreenNew} />
         </Drawer.Navigator>
       </NavigationContainer>
+      <Toast config={toastConfig} />
     </ThemeProvider>
   )
 }
