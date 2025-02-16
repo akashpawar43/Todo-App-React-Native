@@ -61,7 +61,7 @@ const EditTodoScreenNew = ({ route }: EditTodoProps) => {
                 ...prev,
                 title: json?.title,
                 description: json?.description,
-                dueDate: json?.dueDate,
+                dueDate: new Date(json?.dueDate),
                 priority: json?.priority,
                 status: json?.status,
                 category: json?.category
