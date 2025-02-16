@@ -11,11 +11,11 @@ import {
   ScrollView,
 } from 'react-native'
 import { DrawerNavigationProp } from '@react-navigation/drawer'
-import { RootDrawerParams } from '../../App'
+import { RootDrawerParams } from '../../../App'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Icon } from 'react-native-elements'
-import DateTimePicker from '@react-native-community/datetimepicker'
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { Picker } from '@react-native-picker/picker'
 import Toast from 'react-native-toast-message'
 
@@ -56,7 +56,7 @@ const AddTodoScreenNew = () => {
       if (!res.ok) {
         const errorResponse = json.error as ZodErrorResponse
         const showErrors = Object.values(errorResponse)
-          .flatMap(item => 
+          .flatMap(item =>
             Array.isArray(item) ? item : item._errors ?? []
           ).join('\n');
 
@@ -85,10 +85,27 @@ const AddTodoScreenNew = () => {
   }
 
   const onDateChange = (event: any, selectedDate?: Date) => {
-    const currentDate = selectedDate || data.dueDate
-    setShowDatePicker(Platform.OS === 'ios')
-    setData({ ...data, dueDate: currentDate })
+    if (selectedDate) {
+      setData(prevData => ({ ...prevData, dueDate: selectedDate }));
+    }
+    setShowDatePicker(false);
+    // const currentDate = selectedDate || data.dueDate
+    // setShowDatePicker(Platform.OS === 'ios')
+    // setData({ ...data, dueDate: currentDate })
   }
+
+  const showDatePickerModal = () => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: data.dueDate,
+        mode: 'date',
+        display: 'default',
+        onChange: onDateChange,
+      });
+    } else {
+      setShowDatePicker(true); // Open for iOS
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -109,7 +126,6 @@ const AddTodoScreenNew = () => {
           <View style={{ width: 24 }} />
         </View>
 
-        {JSON.stringify(errors)}
         <ScrollView style={styles.scrollView}>
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
@@ -150,7 +166,7 @@ const AddTodoScreenNew = () => {
             {/* {errors?.description && <Text style={styles.errMsg}>{errors?.description?._errors[0]}</Text>} */}
             <TouchableOpacity
               style={styles.inputWrapper}
-              onPress={() => setShowDatePicker(true)}
+              onPress={showDatePickerModal}
             >
               <Icon
                 name="calendar-outline"
@@ -164,7 +180,7 @@ const AddTodoScreenNew = () => {
               </Text>
             </TouchableOpacity>
 
-            {showDatePicker && (
+            {showDatePicker && Platform.OS === 'ios' && (
               <DateTimePicker
                 value={data.dueDate}
                 mode="datetime"

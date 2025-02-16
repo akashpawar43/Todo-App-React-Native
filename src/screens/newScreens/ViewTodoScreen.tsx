@@ -11,7 +11,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootDrawerParams } from '../../App';
+import { RootDrawerParams } from '../../../App';
 import { Icon } from 'react-native-elements';
 
 interface Todo {
@@ -26,7 +26,7 @@ interface Todo {
 
 type ViewTodoProps = {
     // navigation: DrawerNavigationProp<RootDrawerParams>,
-    route: RouteProp<RootDrawerParams, 'View Todo'>,
+    route: RouteProp<RootDrawerParams, 'ViewTodo'>,
 }
 
 export default function ViewTodoScreen({ route }: ViewTodoProps) {

@@ -1,23 +1,31 @@
-import { StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import Headers from '../components/Headers'
+import Headers from '../../components/Headers'
 import { DrawerNavigationProp } from '@react-navigation/drawer'
-import { RootDrawerParams } from '../../App'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { RootDrawerParams } from '../../../App'
+import { RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native'
+import { StatusBar } from 'react-native'
+// import { SafeAreaView } from 'react-native-safe-area-context'
 
-type AddTodoProps = {
-    navigation: DrawerNavigationProp<RootDrawerParams>
+type TodoType = {
+    title: string,
+    description: string
 }
 
-const AddTodoScreen = () => {
-    const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>();
-    const [data, setData] = useState({ title: '', description: '' });
+type EditTodoProps = {
+    // navigation: DrawerNavigationProp<RootDrawerParams>,
+    route: RouteProp<RootDrawerParams, 'Edit Todo'>,
+}
 
-    const handleAddTodo = async () => {
+const EditTodoScreen = ({ route }: EditTodoProps) => {
+    const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>();
+    const { id } = route.params;
+    const [data, setData] = useState<TodoType>({ title: '', description: '' });
+
+    const handleEditTodo = async () => {
         try {
-            const res = await fetch('https://todo-redux-backend.vercel.app/add', {
-                method: 'post',
+            const res = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`, {
+                method: 'patch',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
@@ -28,11 +36,33 @@ const AddTodoScreen = () => {
         }
     }
 
+    const handleGetTodo = async () => {
+        try {
+            const res = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`, {
+                method: 'get',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const json = await res.json();
+            setData((prev) => ({
+                ...prev,
+                title: json.title,
+                description: json.description
+            }))
+            console.log("post res:", json);
+        } catch (error) {
+            console.log('error:', error)
+        }
+    }
+
+    useEffect(() => {
+        handleGetTodo();
+    }, [id]);
+
     return (
         <>
-            <Headers title={'Add Todo'} />
+            <Headers title={'Edit Todo'} />
             <View style={styles.container}>
-                <Text style={styles.titleTxt}>Add Todo</Text>
+                {/* <Text style={styles.titleTxt}>Edit Todo</Text> */}
                 <View style={styles.inputContainer}>
                     <View>
                         <Text style={styles.textLabel}>Enter Title</Text>
@@ -63,15 +93,15 @@ const AddTodoScreen = () => {
                         />
                     </View>
                 </View>
-                <TouchableOpacity onPress={handleAddTodo}>
-                    <Text style={styles.addButton}>Add Todo</Text>
+                <TouchableOpacity onPress={handleEditTodo}>
+                    <Text style={styles.addButton}>Edit Todo</Text>
                 </TouchableOpacity>
             </View>
         </>
     )
 }
 
-export default AddTodoScreen
+export default EditTodoScreen
 
 const styles = StyleSheet.create({
     container: {

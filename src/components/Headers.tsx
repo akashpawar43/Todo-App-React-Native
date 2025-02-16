@@ -16,7 +16,7 @@ const Headers = ({ title }: HeaderProps) => {
     const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>();
     const rightIcon = title == "Home"
         ? <Icon name='add' size={33} color='white'
-            onPress={() => navigation.navigate('Add Todo new')}
+            onPress={() => navigation.navigate('AddTodo')}
         /> : <Icon name='home' size={33} color='white'
             onPress={() => navigation.navigate('Home')}
         />
