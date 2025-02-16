@@ -38,7 +38,7 @@ const List = ({ getData, data }: ListProps) => {
                 <Text style={styles.titletxt}>{data.title}</Text>
                 <Text style={styles.descTxt} numberOfLines={3}>{data.description}</Text>
                 <View style={styles.rightContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ViewTodoNew', { todoId: data._id })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ViewTodoNew', { id: data._id })}>
                         <Icon reverse name='eye' type='font-awesome' size={20} color='#5670cd' />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('EditTodo', { id: data._id })}>

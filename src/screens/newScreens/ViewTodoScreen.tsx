@@ -13,6 +13,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootDrawerParams } from '../../../App';
 import { Icon } from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteTodo, fetchSingleTodo } from '../store/actions/todoActions/todoActions';
 
 interface Todo {
     _id: string;
@@ -32,12 +34,15 @@ type ViewTodoProps = {
 export default function ViewTodoScreen({ route }: ViewTodoProps) {
     const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>();
     const { id } = route.params;
-    const [todo, setTodo] = useState<Todo | null>(null);
-    const [loading, setLoading] = useState(false);
+    // const [todo, setTodo] = useState<Todo | null>(null);
+    // const [loading, setLoading] = useState(false);
     const fadeAnim = new Animated.Value(0);
+    const { loading, error, todo, deleteTodoId } = useSelector((state: any) => state.todoReducer);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchTodo();
+        dispatch(fetchSingleTodo(id))
+        // fetchTodo();
         Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 500,
@@ -45,33 +50,14 @@ export default function ViewTodoScreen({ route }: ViewTodoProps) {
         }).start();
     }, [id]);
 
-    const fetchTodo = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`);
-            const data = await response.json();
-            setTodo(data);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching todo:', error);
-            setLoading(false);
-        }
-    };
+    useEffect(() => {
+        if (!deleteTodoId) return;
+        if (id == deleteTodoId)
+            navigation.navigate('Home')
+    }, [deleteTodoId])
 
     const handleDeleteTodo = async (id: string) => {
-        try {
-            const res = await fetch(`https://todo-redux-backend.vercel.app/delete/${id}`, {
-                method: 'delete',
-                headers: { 'Content-Type': 'application/json' },
-                // body: JSON.stringify(data),
-            });
-            const json = await res.json();
-            console.log("delete:", json)
-            navigation.navigate('Home')
-            // getData();
-        } catch (error) {
-            console.log("error while delete:", error);
-        }
+        dispatch(deleteTodo(id));
     }
 
     const getPriorityColor = (priority: string) => {

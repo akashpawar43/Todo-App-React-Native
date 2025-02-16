@@ -18,6 +18,8 @@ import { Icon } from 'react-native-elements'
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { Picker } from '@react-native-picker/picker'
 import Toast from 'react-native-toast-message'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSingleTodo } from '../store/actions/todoActions/todoActions'
 
 type ZodFieldError = {
     _errors: string[];
@@ -39,6 +41,8 @@ const EditTodoScreenNew = ({ route }: EditTodoProps) => {
     const { id } = route.params;
     const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>();
     const [errors, setErrors] = useState<ZodErrorResponse | {}>({});
+    const { loading, error, todo } = useSelector((state: any) => state.todoReducer);
+    const dispatch = useDispatch();
     const [data, setData] = useState({
         title: '',
         description: '',
@@ -50,29 +54,44 @@ const EditTodoScreenNew = ({ route }: EditTodoProps) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [animation] = useState(new Animated.Value(0));
 
-    const handleGetTodo = async () => {
-        try {
-            const res = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`, {
-                method: 'get',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const json = await res.json();
-            setData((prev) => ({
-                ...prev,
-                title: json?.title,
-                description: json?.description,
-                dueDate: new Date(json?.dueDate),
-                priority: json?.priority,
-                status: json?.status,
-                category: json?.category
-            }));
-        } catch (error) {
-            console.log('error:', error)
-        }
-    }
+    // const handleGetTodo = async () => {
+    //     try {
+    //         const res = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`, {
+    //             method: 'get',
+    //             headers: { 'Content-Type': 'application/json' },
+    //         });
+    //         const json = await res.json();
+    //         setData((prev) => ({
+    //             ...prev,
+    //             title: json?.title,
+    //             description: json?.description,
+    //             dueDate: new Date(json?.dueDate),
+    //             priority: json?.priority,
+    //             status: json?.status,
+    //             category: json?.category
+    //         }));
+    //     } catch (error) {
+    //         console.log('error:', error)
+    //     }
+    // }
 
     useEffect(() => {
-        handleGetTodo();
+        if (todo?.length == 0) return
+        setData((prev) => ({
+            ...prev,
+            title: todo?.title,
+            description: todo?.description,
+            dueDate: new Date(todo?.dueDate),
+            priority: todo?.priority,
+            status: todo?.status,
+            category: todo?.category
+        }));
+    }, [todo]);
+
+    useEffect(() => {
+        if (id == todo._id) return
+        dispatch(fetchSingleTodo(id))
+        // handleGetTodo();
     }, [id]);
 
     const handleEditTodo = async () => {

@@ -17,6 +17,9 @@ import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast
 import ViewTodoScreenNew from './src/screens/oldScreens/ViewTodoScreenNew';
 import TodoListScreen from './src/screens/newScreens/TodoListScreen';
 import EditTodoScreenNew from './src/screens/newScreens/EditTodoScreenNew';
+import ProfileScreen from './src/screens/newScreens/ProfileScreen';
+import { Provider } from 'react-redux';
+import store from './src/screens/store/store/store';
 
 export type RootDrawerParams = {
   Home: undefined,
@@ -26,6 +29,7 @@ export type RootDrawerParams = {
   'EditTodoNew': { id: string },
   'ViewTodoNew': { id: string },
   'HomeNew': undefined,
+  'Profile': undefined,
   // 'Add Todo new': undefined,
 }
 
@@ -93,45 +97,47 @@ const App = () => {
     ),
   };
   return (
-    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
-      <NavigationContainer>
-        <Drawer.Navigator screenOptions={{ headerShown: false, drawerStyle: { padding: 0 } }} drawerContent={(props) => <CustomDrawerContent {...props} />} initialRouteName="Home">
-          <Drawer.Screen name='Home' options={{
-            drawerIcon: ({ color, size }) => (
-              <Icon name='home' size={33} color='#5670cd' />
-            ),
-            drawerActiveTintColor: '#5670cd',
-            drawerLabelStyle: {
-              color: '#5670cd',
-            },
-          }} component={TodoListScreen} />
-          {/* }} component={HomeScreen} /> */}
-          <Drawer.Screen name='AddTodo' options={{
-            drawerIcon: ({ color, size }) => (
-              <Icon name='add' size={33} color='#5670cd' />
-            ),
-            drawerActiveTintColor: '#5670cd',
-            drawerLabelStyle: {
-              color: '#5670cd',
-            },
-          }} component={AddTodoScreenNew} />
-          <Drawer.Screen name='EditTodoNew' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreenNew} />
-          <Drawer.Screen name='ViewTodo' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreen} />
-          <Drawer.Screen name='ViewTodoNew' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreenNew} />
-          <Drawer.Screen name='EditTodo' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreen} />
-          {/* <Drawer.Screen name='HomeNew' options={{
-            drawerIcon: ({ color, size }) => (
-              <Icon name='add' size={33} color='#5670cd' />
-            ),
-            drawerActiveTintColor: '#5670cd',
-            drawerLabelStyle: {
-              color: '#5670cd',
-            },
-          }} component={TodoListScreen} /> */}
-        </Drawer.Navigator>
-      </NavigationContainer>
-      <Toast config={toastConfig} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+        <NavigationContainer>
+          <Drawer.Navigator screenOptions={{ headerShown: false, drawerStyle: { padding: 0 } }} drawerContent={(props) => <CustomDrawerContent {...props} />} initialRouteName="Home">
+            <Drawer.Screen name='Home' options={{
+              drawerIcon: ({ color, size }) => (
+                <Icon name='home' size={33} color='#5670cd' />
+              ),
+              drawerActiveTintColor: '#5670cd',
+              drawerLabelStyle: {
+                color: '#5670cd',
+              },
+            }} component={TodoListScreen} />
+            {/* }} component={HomeScreen} /> */}
+            <Drawer.Screen name='AddTodo' options={{
+              drawerIcon: ({ color, size }) => (
+                <Icon name='add' size={33} color='#5670cd' />
+              ),
+              drawerActiveTintColor: '#5670cd',
+              drawerLabelStyle: {
+                color: '#5670cd',
+              },
+            }} component={AddTodoScreenNew} />
+            <Drawer.Screen name='EditTodoNew' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreenNew} />
+            <Drawer.Screen name='ViewTodo' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreen} />
+            <Drawer.Screen name='ViewTodoNew' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreenNew} />
+            <Drawer.Screen name='EditTodo' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreen} />
+            <Drawer.Screen name='Profile' options={{
+              drawerIcon: ({ color, size }) => (
+                <Icon name='profile' size={33} color='#5670cd' />
+              ),
+              drawerActiveTintColor: '#5670cd',
+              drawerLabelStyle: {
+                color: '#5670cd',
+              },
+            }} component={ProfileScreen} />
+          </Drawer.Navigator>
+        </NavigationContainer>
+        <Toast config={toastConfig} />
+      </ThemeProvider>
+    </Provider>
   )
 }
 

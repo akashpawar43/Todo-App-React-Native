@@ -15,6 +15,8 @@ import { DrawerNavigationProp } from '@react-navigation/drawer'
 import { RootDrawerParams } from '../../../App'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Icon } from 'react-native-elements'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchTodos } from '../store/actions/todoActions/todoActions'
 
 type Todo = {
   _id: string;
@@ -28,30 +30,33 @@ type Todo = {
 
 const TodoListScreen = () => {
   const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>()
-  const [todos, setTodos] = useState<Todo[]>([])
+  // const [todos, setTodos] = useState<Todo[]>([])
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('dueDate')
   const [filterBy, setFilterBy] = useState('all')
-  const [refreshing, setRefreshing] = useState(false)
+  // const [refreshing, setRefreshing] = useState(false)
+  const { loading, error, todos } = useSelector((state: any) => state.todoReducer);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchTodos()
+    dispatch(fetchTodos());
+    // fetchTodos()
   }, [])
 
   useEffect(() => {
     applyFiltersAndSort()
   }, [todos, searchQuery, sortBy, filterBy])
 
-  const fetchTodos = async () => {
-    try {
-      const response = await fetch('https://todo-redux-backend.vercel.app/')
-      const data = await response.json()
-      setTodos(data)
-    } catch (error) {
-      console.error('Error fetching todos:', error)
-    }
-  }
+  // const fetchTodos = async () => {
+  //   try {
+  //     const response = await fetch('https://todo-redux-backend.vercel.app/')
+  //     const data = await response.json()
+  //     setTodos(data)
+  //   } catch (error) {
+  //     console.error('Error fetching todos:', error)
+  //   }
+  // }
 
   const applyFiltersAndSort = () => {
     let filtered = todos.filter(todo =>
@@ -77,9 +82,7 @@ const TodoListScreen = () => {
   }
 
   const onRefresh = async () => {
-    setRefreshing(true)
-    await fetchTodos()
-    setRefreshing(false)
+    dispatch(fetchTodos());
   }
 
   const renderTodoItem = ({ item }: { item: Todo }) => {
@@ -169,7 +172,7 @@ const TodoListScreen = () => {
         contentContainerStyle={styles.listContainer}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={loading}
             onRefresh={onRefresh}
           />
         }
