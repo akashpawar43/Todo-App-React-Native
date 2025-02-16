@@ -14,7 +14,7 @@ type TodoType = {
 
 type EditTodoProps = {
     // navigation: DrawerNavigationProp<RootDrawerParams>,
-    route: RouteProp<RootDrawerParams, 'Edit Todo'>,
+    route: RouteProp<RootDrawerParams, 'EditTodo'>,
 }
 
 const EditTodoScreen = ({ route }: EditTodoProps) => {

@@ -16,13 +16,15 @@ import ViewTodoScreen from './src/screens/newScreens/ViewTodoScreen';
 import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
 import ViewTodoScreenNew from './src/screens/oldScreens/ViewTodoScreenNew';
 import TodoListScreen from './src/screens/newScreens/TodoListScreen';
+import EditTodoScreenNew from './src/screens/newScreens/EditTodoScreenNew';
 
 export type RootDrawerParams = {
   Home: undefined,
   'AddTodo': undefined,
   'ViewTodo': { id: string },
-  'Edit Todo': { id: string },
-  'ViewTodoNew': { todoId: string },
+  'EditTodo': { id: string },
+  'EditTodoNew': { id: string },
+  'ViewTodoNew': { id: string },
   'HomeNew': undefined,
   // 'Add Todo new': undefined,
 }
@@ -54,11 +56,23 @@ const App = () => {
   }, []);
 
   const toastConfig = {
-    // success: (props) => (
-    //   <BaseToast
-    //     {...props}
-    //   />
-    // ),
+    success: (props: BaseToastProps) => (
+      <BaseToast
+        {...props}
+        style={{
+          // minHeight: 80,
+          // paddingVertical: 20,
+          // marginTop: 10,
+          borderLeftColor: '#4caf50',
+        }}
+        text1Style={{
+          fontSize: 13
+        }}
+        text2Style={{
+          fontSize: 13
+        }}
+      />
+    ),
     error: (props: BaseToastProps) => (
       <ErrorToast
         {...props}
@@ -101,9 +115,10 @@ const App = () => {
               color: '#5670cd',
             },
           }} component={AddTodoScreenNew} />
+          <Drawer.Screen name='EditTodoNew' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreenNew} />
           <Drawer.Screen name='ViewTodo' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreen} />
           <Drawer.Screen name='ViewTodoNew' options={{ drawerItemStyle: { display: 'none' } }} component={ViewTodoScreenNew} />
-          <Drawer.Screen name='Edit Todo' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreen} />
+          <Drawer.Screen name='EditTodo' options={{ drawerItemStyle: { display: 'none' } }} component={EditTodoScreen} />
           {/* <Drawer.Screen name='HomeNew' options={{
             drawerIcon: ({ color, size }) => (
               <Icon name='add' size={33} color='#5670cd' />

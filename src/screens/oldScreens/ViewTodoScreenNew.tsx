@@ -14,12 +14,12 @@ import { RootDrawerParams } from '../../../App'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Icon } from 'react-native-elements'
 
-type ViewTodoRouteProp = RouteProp<RootDrawerParams, 'ViewTodoNew'>
+type ViewTodoRouteProp = RouteProp<RootDrawerParams, 'ViewTodo'>
 
 const ViewTodoScreenNew = () => {
     const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>()
     const route = useRoute<ViewTodoRouteProp>()
-    const { todoId } = route.params
+    const { id } = route.params
     const [todo, setTodo] = useState<any>(null)
 
     const priorityStyle = styles[todo.priority.toLowerCase() + 'Priority' as keyof typeof styles] as ViewStyle || {};
@@ -31,7 +31,7 @@ const ViewTodoScreenNew = () => {
 
     const fetchTodo = async () => {
         try {
-            const response = await fetch(`https://todo-redux-backend.vercel.app/todo/${todoId}`)
+            const response = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`)
             const data = await response.json()
             setTodo(data)
         } catch (error) {
@@ -52,7 +52,7 @@ const ViewTodoScreenNew = () => {
                     text: "OK",
                     onPress: async () => {
                         try {
-                            await fetch(`https://todo-redux-backend.vercel.app/delete/${todoId}`, {
+                            await fetch(`https://todo-redux-backend.vercel.app/delete/${id}`, {
                                 method: 'DELETE',
                             })
                             navigation.navigate('Home')
@@ -85,7 +85,7 @@ const ViewTodoScreenNew = () => {
                     />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>View Todo</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Edit Todo', { id: todoId })}>
+                <TouchableOpacity onPress={() => navigation.navigate('EditTodo', { id })}>
                     <Icon
                         name="create-outline"
                         type="ionicon"

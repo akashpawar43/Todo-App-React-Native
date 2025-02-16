@@ -41,7 +41,7 @@ const List = ({ getData, data }: ListProps) => {
                     <TouchableOpacity onPress={() => navigation.navigate('ViewTodoNew', { todoId: data._id })}>
                         <Icon reverse name='eye' type='font-awesome' size={20} color='#5670cd' />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Edit Todo', { id: data._id })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('EditTodo', { id: data._id })}>
                         <Icon reverse name='edit' size={20} color='#5670cd' />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDeleteTodo(data._id)}>

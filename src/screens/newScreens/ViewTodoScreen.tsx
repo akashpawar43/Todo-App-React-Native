@@ -126,7 +126,7 @@ export default function ViewTodoScreen({ route }: ViewTodoProps) {
                 >
                     <Icon name="arrow-back" type="ionicon" size={24} color="#333" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.editButton}>
+                <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('EditTodoNew', { id })}>
                     <Icon name="create-outline" type="ionicon" size={24} color="#5670cd" />
                 </TouchableOpacity>
             </View>
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         margin: 16,
         borderRadius: 12,
-        padding: 20, 
+        padding: 20,
         shadowColor: '#5670cd',
         shadowOffset: {
             width: 0,

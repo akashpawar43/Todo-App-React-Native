@@ -52,7 +52,14 @@ const AddTodoScreenNew = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
-      const json = await res.json()
+      const json = await res.json();
+      if (res.ok) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Todo Added Successfully'
+        })
+      }
       if (!res.ok) {
         const errorResponse = json.error as ZodErrorResponse
         const showErrors = Object.values(errorResponse)
