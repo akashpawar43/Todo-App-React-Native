@@ -18,7 +18,7 @@ import { Icon } from 'react-native-elements'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchTodos } from '../store/actions/todoActions/todoActions'
 
-type Todo = {
+export type Todo = {
   _id: string;
   title: string;
   description: string;
@@ -59,16 +59,16 @@ const TodoListScreen = () => {
   // }
 
   const applyFiltersAndSort = () => {
-    let filtered = todos.filter(todo =>
+    let filtered = todos.filter((todo: Todo) =>
       todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       todo.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
     if (filterBy !== 'all') {
-      filtered = filtered.filter(todo => todo.status.toLowerCase() === filterBy)
+      filtered = filtered.filter((todo: Todo) => todo.status.toLowerCase() === filterBy)
     }
 
-    filtered.sort((a, b) => {
+    filtered.sort((a: Todo, b: Todo) => {
       if (sortBy === 'dueDate') {
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
       } else if (sortBy === 'priority') {

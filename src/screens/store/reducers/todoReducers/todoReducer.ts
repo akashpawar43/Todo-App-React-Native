@@ -1,3 +1,4 @@
+import { Todo } from '../../../newScreens/TodoListScreen';
 import *  as types from '../../types/types';
 
 const initialState = {
@@ -73,10 +74,14 @@ export const todoReducer = (state = initialState, action: any) => {
                 loading: true,
             }
         case types.UPDATE_TODO_SUCCESS:
+            const updateTodos = state.todos.map((todo: Todo) =>
+                todo._id === action.payload?._id ? { ...todo, ...action.payload } : todo
+            )
+            const todoExists = updateTodos.some(todo => todo._id === action.payload?._id)
             return {
                 ...state,
                 loading: false,
-                todos: action.payload
+                todos: todoExists ? updateTodos : [...updateTodos, action.payload]
             }
         case types.UPDATE_TODO_FAILURE:
             return {
@@ -91,13 +96,11 @@ export const todoReducer = (state = initialState, action: any) => {
                 loading: true,
             }
         case types.DELETE_TODO_SUCCESS:
-            console.log('state', state.todos)
-            console.log('action', action.payload)
             return {
                 ...state,
                 loading: false,
                 deleteTodoId: action.payload?._id,
-                todos: state?.todos?.filter(todo => todo._id != action.payload?._id)
+                todos: state?.todos?.filter((todo: Todo) => todo._id != action.payload?._id)
             }
         case types.DELETE_TODO_FAILURE:
             return {

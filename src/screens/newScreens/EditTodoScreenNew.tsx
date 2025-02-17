@@ -19,7 +19,7 @@ import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/d
 import { Picker } from '@react-native-picker/picker'
 import Toast from 'react-native-toast-message'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchSingleTodo } from '../store/actions/todoActions/todoActions'
+import { fetchSingleTodo, updateTodo } from '../store/actions/todoActions/todoActions'
 
 type ZodFieldError = {
     _errors: string[];
@@ -41,9 +41,10 @@ const EditTodoScreenNew = ({ route }: EditTodoProps) => {
     const { id } = route.params;
     const navigation = useNavigation<DrawerNavigationProp<RootDrawerParams>>();
     const [errors, setErrors] = useState<ZodErrorResponse | {}>({});
-    const { loading, error, todo } = useSelector((state: any) => state.todoReducer);
+    const { loading, error, todo, todos } = useSelector((state: any) => state.todoReducer);
     const dispatch = useDispatch();
     const [data, setData] = useState({
+        _id: '',
         title: '',
         description: '',
         dueDate: new Date(),
@@ -79,6 +80,7 @@ const EditTodoScreenNew = ({ route }: EditTodoProps) => {
         if (todo?.length == 0) return
         setData((prev) => ({
             ...prev,
+            _id: todo?._id,
             title: todo?.title,
             description: todo?.description,
             dueDate: new Date(todo?.dueDate),
@@ -95,43 +97,48 @@ const EditTodoScreenNew = ({ route }: EditTodoProps) => {
     }, [id]);
 
     const handleEditTodo = async () => {
-        try {
-            const res = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`, {
-                method: 'patch',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            })
-            const json = await res.json();
-            if (res.ok) {
-                Toast.show({
-                    type: 'success',
-                    text1: 'Success',
-                    text2: 'Todo Updated Successfully'
-                })
-            }
-            if (!res.ok) {
-                const errorResponse = json.error as ZodErrorResponse
-                const showErrors = Object.values(errorResponse)
-                    .flatMap(item =>
-                        Array.isArray(item) ? item : item._errors ?? []
-                    ).join('\n');
+        // try {
+        //     const res = await fetch(`https://todo-redux-backend.vercel.app/todo/${id}`, {
+        //         method: 'patch',
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify(data),
+        //     })
+        //     const json = await res.json();
+        //     if (res.ok) {
+        //         Toast.show({
+        //             type: 'success',
+        //             text1: 'Success',
+        //             text2: 'Todo Updated Successfully'
+        //         })
+        //     }
+        //     if (!res.ok) {
+        //         const errorResponse = json.error as ZodErrorResponse
+        //         const showErrors = Object.values(errorResponse)
+        //             .flatMap(item =>
+        //                 Array.isArray(item) ? item : item._errors ?? []
+        //             ).join('\n');
 
-                Toast.show({
-                    type: 'error',
-                    text1: 'Required Fields',
-                    text2: `${showErrors}`,
-                    // text2: "Lorem ipsum dolor sit amet consectetur adipisicing elit. A inventore voluptas debitis! Dicta recusandae cum suscipit nulla iure dignissimos eos deleniti nemo eaque!",
-                    props: {
-                        text2NumberOfLines: 5,
-                    }
-                })
-                return
-            }
-            navigation.navigate('Home')
-        } catch (error) {
-            console.log('error:', error)
-        }
+        //         Toast.show({
+        //             type: 'error',
+        //             text1: 'Required Fields',
+        //             text2: `${showErrors}`,
+        //             // text2: "Lorem ipsum dolor sit amet consectetur adipisicing elit. A inventore voluptas debitis! Dicta recusandae cum suscipit nulla iure dignissimos eos deleniti nemo eaque!",
+        //             props: {
+        //                 text2NumberOfLines: 5,
+        //             }
+        //         })
+        //         return
+        //     }
+        //     navigation.navigate('Home')
+        // } catch (error) {
+        //     console.log('error:', error)
+        // }
+        dispatch(updateTodo({...data, dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null}));
     }
+
+    useEffect(() => {
+        navigation.navigate('Home')
+    }, [todos])
 
     const animateButton = () => {
         Animated.sequence([

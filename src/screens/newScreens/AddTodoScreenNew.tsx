@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -18,6 +18,8 @@ import { Icon } from 'react-native-elements'
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { Picker } from '@react-native-picker/picker'
 import Toast from 'react-native-toast-message'
+import { useDispatch, useSelector } from 'react-redux'
+import { addTodo } from '../store/actions/todoActions/todoActions'
 
 type ZodFieldError = {
   _errors: string[];
@@ -44,44 +46,15 @@ const AddTodoScreenNew = () => {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [animation] = useState(new Animated.Value(0));
+  const { todos } = useSelector((state: any) => state.todoReducer)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    navigation.navigate('Home')
+  }, [todos])
 
   const handleAddTodo = async () => {
-    try {
-      const res = await fetch('https://todo-redux-backend.vercel.app/add', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      const json = await res.json();
-      if (res.ok) {
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Todo Added Successfully'
-        })
-      }
-      if (!res.ok) {
-        const errorResponse = json.error as ZodErrorResponse
-        const showErrors = Object.values(errorResponse)
-          .flatMap(item =>
-            Array.isArray(item) ? item : item._errors ?? []
-          ).join('\n');
-
-        Toast.show({
-          type: 'error',
-          text1: 'Required Fields',
-          text2: `${showErrors}`,
-          // text2: "Lorem ipsum dolor sit amet consectetur adipisicing elit. A inventore voluptas debitis! Dicta recusandae cum suscipit nulla iure dignissimos eos deleniti nemo eaque!",
-          props: {
-            text2NumberOfLines: 5,
-          }
-        })
-        return
-      }
-      navigation.navigate('Home')
-    } catch (error) {
-      console.log('error:', error)
-    }
+    dispatch(addTodo({...data, dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null}));
   }
 
   const animateButton = () => {
