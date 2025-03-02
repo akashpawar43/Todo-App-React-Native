@@ -50,11 +50,19 @@ const AddTodoScreenNew = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setData({
+      title: '',
+      description: '',
+      dueDate: new Date(),
+      priority: 'Medium',
+      status: 'Pending',
+      category: 'Personal'
+    })
     navigation.navigate('Home')
   }, [todos])
 
   const handleAddTodo = async () => {
-    dispatch(addTodo({...data, dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null}));
+    dispatch(addTodo({ ...data, dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null }));
   }
 
   const animateButton = () => {

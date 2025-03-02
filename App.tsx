@@ -40,7 +40,8 @@ const CustomDrawerContent = (props: any) => {
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerHeader}>
         <ImageBackground style={styles.backgroundImage} >
-          <Image source={require('./src/assets/profile.png')} style={styles.profileImage} />
+          <Image source={{ uri: 'https://picsum.photos/150' }} style={styles.profileImage} />
+          {/* <Image source={require('./src/assets/profile.png')} style={styles.profileImage} /> */}
         </ImageBackground>
       </View>
       <DrawerItemList {...props} />
